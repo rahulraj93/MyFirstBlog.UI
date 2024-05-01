@@ -10,6 +10,8 @@ import { Observable } from 'rxjs';
 })
 export class CategoryListComponent implements OnInit {
 
+
+
   // categories?: Category[];
   categories$?: Observable<Category[]>;
 
@@ -26,5 +28,13 @@ export class CategoryListComponent implements OnInit {
     //   }
     // })
   }
+
+  OnSearch(query : string) {
+    this.categories$ = this.categoryService.getAllCategory(query);
+    }
+
+  Sort(sortBy: string,sortDirection: string) {
+    this.categories$ = this.categoryService.getAllCategory(undefined, sortBy, sortDirection);
+    }
 
 }

@@ -14,6 +14,7 @@ export const authGuard: CanActivateFn = (route, state) => {
   
   //check for jwt token
   let token = cookieService.get('Authorization');
+
   if(token && user){
     token = token.replace('Bearer', '');
     const tokendecoded : any =  jwtDecode(token);
@@ -23,19 +24,21 @@ export const authGuard: CanActivateFn = (route, state) => {
     const currentTime = new Date().getTime();
 
     if(expirationDate < currentTime)
-      {
-        //logout
-        authService.logout();
-        return router.createUrlTree(['/login'],{queryParams : { returUrl : state.url}})
+    {
+      //logout
+      authService.logout();
+      return router.createUrlTree(['/login'],{queryParams : { returUrl : state.url}})
+    }
+    else
+    {
+      //Token is valid
+      if(user.roles.includes('Writer')){
+        return true;
       }else{
-        //Token is valid
-        if(user.roles.includes('Writer')){
-          return true;
-        }else{
-          alert('Unauthorized');
-          return false;
-        }
+        alert('Unauthorized');
+        return false;
       }
+    }
 
     }else{
       //logout
