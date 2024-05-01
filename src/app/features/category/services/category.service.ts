@@ -15,7 +15,12 @@ export class CategoryService {
   constructor(private http: HttpClient,
     private cookieService : CookieService ) { }
 
-  getAllCategory(query? : string, sortBy? : string, sortDirection? : string): Observable<Category[]> {
+  getAllCategory(query? : string, 
+              sortBy? : string, 
+              sortDirection? : string,
+              pageNumber? :  number, 
+              pageSize? : number): Observable<Category[]> {
+
     let params = new HttpParams();
     if(query){
       params = params.set('query', query)
@@ -29,6 +34,14 @@ export class CategoryService {
       params = params.set('sortDirection', sortDirection)
     }
 
+    if(pageNumber){
+      params = params.set('pageNumber', pageNumber)
+    }
+
+    if(pageSize){
+      params = params.set('pageSize', pageSize)
+    }
+
     return this.http.get<Category[]>(`${environment.apiBaseUrl}/api/Categories`, {params : params});
   }
 
@@ -38,6 +51,10 @@ export class CategoryService {
 
   addCategory(model: AddCategoryRequest): Observable<void> {
     return this.http.post<void>(`${environment.apiBaseUrl}/api/categories?addAuth=true`, model)
+  }
+
+  getCategoryCount(): Observable<number> {
+    return this.http.get<number>(`${environment.apiBaseUrl}/api/Categories/count`)
   }
 
   updateCategory(id : string, updateCategoryRequest: UpdateCategoryRequest) : 
